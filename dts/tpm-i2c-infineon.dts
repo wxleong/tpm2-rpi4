@@ -1,0 +1,25 @@
+/*
+ * Device Tree overlay for the Infineon Trusted Platform Module
+ */
+
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2835";
+
+	fragment@0 {
+		target = <&i2c_arm>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+
+			slb9670: slb9670@2e {
+				compatible = "infineon,tpm_i2c_infineon";
+				reg = <0x2e>;
+				status = "okay";
+			};
+		};
+	};
+};
