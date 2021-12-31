@@ -149,7 +149,7 @@ $ make kernelversion
 5.2.21
 ```
 
-Patch the kernel (this is taken from [[4]](#4) v2.1.3):
+Patch the kernel (the changes is taken from [[4]](#4) v2.1.3):
 ```
 $ git clone https://github.com/wxleong/tpm2-rpi4 ~/tpm2-rpi4
 $ cd ~/linux
