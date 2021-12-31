@@ -122,111 +122,9 @@ $ ls /dev | grep tpm
 
 Now you may proceed to the next step [[2]](#2).
 
-# Enable I2C TPM 1.2
-
-**This section is not tested yet!**
-
-## Rebuild Raspberry Pi 4 Kernel
-
-On your host machine.
-
-Install dependencies:
-```
-$ sudo apt install git bc bison flex libssl-dev make libc6-dev libncurses5-dev
-```
-
-Install 32-bit toolchain:
-```
-$ sudo apt install crossbuild-essential-armhf
-```
-
-Download kernel source:
-```
-$ git clone https://github.com/raspberrypi/linux ~/linux
-$ cd ~/linux
-$ git checkout 1.20210928
-$ make kernelversion
-5.10.63
-```
-
-Build:
-```
-$ KERNEL=kernel7l
-$ make -j$(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bcm2711_defconfig
-$ make -j$(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- menuconfig
-    Device Drivers  --->
-        Character devices  --->
-            <M> TPM Hardware Support  --->
-                <M> TPM Interface Specification 1.2 Interface (I2C - Infineon)
-$ make -j$(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage modules dtbs
-```
-
-Copy to microSD card:
-```
-$ mkdir mnt
-$ mkdir mnt/fat32
-$ mkdir mnt/ext4
-$ sudo umount /dev/sd?1
-$ sudo umount /dev/sd?2
-$ sudo mount /dev/sd?1 mnt/fat32
-$ sudo mount /dev/sd?2 mnt/ext4
-$ sudo env PATH=$PATH make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- INSTALL_MOD_PATH=mnt/ext4 modules_install
-$ sudo cp mnt/fat32/$KERNEL.img mnt/fat32/$KERNEL-backup.img
-$ sudo cp arch/arm/boot/zImage mnt/fat32/$KERNEL.img
-$ sudo cp arch/arm/boot/dts/*.dtb mnt/fat32/
-$ sudo cp arch/arm/boot/dts/overlays/*.dtb* mnt/fat32/overlays/
-$ sudo cp arch/arm/boot/dts/overlays/README mnt/fat32/overlays/
-$ sudo umount mnt/fat32
-$ sudo umount mnt/ext4
-```
-
-Enable i2c by adding the following line to the file `/boot/config.txt`:
-```
-dtparam=i2c_arm=on
-```
-For more details about the parameter `i2c_arm`, please refer to [[3]](#3).
-
-## Device Tree
-
-Install device tree compiler on your host machine:
-```
-$ sudo snap install device-tree-compiler 
-```
-
-Decompile Raspberry Pi 4 device tree blob `~/linux/arch/arm/boot/dts/bcm2711-rpi-4-b.dtb`:
-```
-$ dtc -I dtb -O dts -o ~/bcm2711-rpi-4-b.dts ~/linux/arch/arm/boot/dts/bcm2711-rpi-4-b.dtb 
-```
-
-Boot into Raspberry Pi OS and scan the i2c bus for the address of TPM:
-```
-$ sudo i2cdetect -y 1
-     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
-00:                         -- -- -- -- -- -- -- --
-10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- 2e --
-30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-70: -- -- -- -- -- -- -- --
-```
-0x2e is the TPM address.
-
-Build the i2c TPM device tree blob overlay:
-```
-$ git clone https://github.com/wxleong/tpm2-rpi4 ~/tpm2-rpi4
-$ dtc -@ -I dts -O dtb -o tpm-i2c-infineon.dtbo ~/tpm2-rpi4/dts/tpm-i2c-infineon.dts
-```
-
-Copy the `tpm-i2c-infineon.dtbo` to `/boot/overlays/` and add the following line to the file `/boot/config.txt`:
-```
-dtoverlay=tpm-i2c-infineon
-```
-
 # Enable I2C TPM 2.0
 
-**Not tested yet: [[4]](#4)**
+**Not tested yet.**
 
 ## Rebuild Raspberry Pi 4 Kernel
 
@@ -242,11 +140,11 @@ Install 32-bit toolchain:
 $ sudo apt install crossbuild-essential-armhf
 ```
 
-Download kernel source:
+Download kernel source (rpi-5.2.y):
 ```
 $ git clone https://github.com/raspberrypi/linux ~/linux
 $ cd ~/linux
-$ git checkout rpi-5.2.y
+$ git checkout 94dbfa7606fc2f3df44979ed9c2d1d3676f2c159
 $ make kernelversion
 5.2.21
 ```
@@ -266,7 +164,8 @@ $ make -j$(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- menuconfig
     Device Drivers  --->
         Character devices  --->
             <M> TPM Hardware Support  --->
-                <M> TPM Interface Specification 1.2 Interface (I2C - Infineon)
+                <M> TPM Interface Specification 1.2/2.0 Interface (I2C - PTP)
+                (32)    Max I2C Buffer Size (NEW)
 $ make -j$(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage modules dtbs
 ```
 
@@ -296,6 +195,7 @@ Install device tree compiler on your host machine:
 $ sudo snap install device-tree-compiler 
 ```
 
+<!--
 Decompile Raspberry Pi 4 device tree blob `~/linux/arch/arm/boot/dts/bcm2711-rpi-4-b.dtb`:
 ```
 $ dtc -I dtb -O dts -o ~/bcm2711-rpi-4-b.dts ~/linux/arch/arm/boot/dts/bcm2711-rpi-4-b.dtb 
@@ -315,8 +215,9 @@ $ sudo i2cdetect -y 1
 70: -- -- -- -- -- -- -- --
 ```
 0x2e is the TPM address.
+-->
 
-Build the i2c TPM device tree blob overlay:
+Build the device tree blob overlay:
 ```
 $ git clone https://github.com/wxleong/tpm2-rpi4 ~/tpm2-rpi4
 $ dtc -@ -I dts -O dtb -o tpm-i2c-infineon.dtbo ~/tpm2-rpi4/dts/tpm-i2c-infineon.dts
