@@ -11,6 +11,7 @@ Enable OPTIGA™ TPM 2.0 on Raspberry Pi 4.
 - **[Enable I2C TPM 1.2](#enable-i2c-tpm-12)**
     - **[Rebuild Raspberry Pi 4 Kernel](#rebuild-raspberry-pi-4-kernel)**
     - **[Device Tree](#device-tree)**
+- **[Enable I2C TPM 2.0](#enable-i2c-tpm-20)**
 - **[References](#references)**
 - **[License](#license)**
 
@@ -224,11 +225,16 @@ Copy the `tpm-i2c-infineon.dtbo` to `/boot/overlays/` and add the following line
 dtoverlay=tpm-i2c-infineon
 ```
 
+# Enable I2C TPM 2.0
+
+**Not tested yet: [[4]](#4)**
+
 # References
 
 <a id="1">[1] https://www.infineon.com/cms/en/product/evaluation-boards/iridium9670-tpm2.0-linux/</a><br>
 <a id="2">[2] https://github.com/wxleong/tpm2-cmd-ref</a><br>
 <a id="3">[3] https://forums.raspberrypi.com/viewtopic.php?t=236915</a><br>
+<a id="4">[4] https://github.com/Nuvoton-Israel/tpm_i2c_ptp</a><br>
 
 # License
 
