@@ -16,7 +16,7 @@
 			status = "okay";
 
 			slb9670: slb9670@2e {
-				compatible = "infineon,tpm_i2c_infineon";
+				compatible = "tcg,tpm_i2c_ptp";
 				reg = <0x2e>;
 				status = "okay";
 			};
