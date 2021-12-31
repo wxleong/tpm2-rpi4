@@ -25,6 +25,7 @@ Enable OPTIGA™ TPM 2.0 on Raspberry Pi 4.
 - Raspberry Pi 4 Model B with following board mounted:
     - TPM 2.0 board (SPI): Iridium 9670 TPM 2.0 board [[1]](#1), or
     - TPM 2.0 board (I2C): tbd
+<!-- SPI 9670/9672, I2C 9673-->
 - Host machine:
     ```
     $ lsb_release -a
@@ -154,7 +155,7 @@ $ make kernelversion
 5.2.21
 ```
 
-Patch the kernel (the changes is taken from [[4]](#4) v2.1.3):
+Patch the kernel (the changes are taken from [[4]](#4) version v2.1.3):
 ```
 $ git clone https://github.com/wxleong/tpm2-rpi4 ~/tpm2-rpi4
 $ cd ~/linux
