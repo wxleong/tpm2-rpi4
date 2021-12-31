@@ -11,14 +11,20 @@ Enable OPTIGA™ TPM 2.0 on Raspberry Pi 4.
 - **[Enable I2C TPM 2.0](#enable-i2c-tpm-20)**
     - **[Rebuild Raspberry Pi 4 Kernel](#rebuild-raspberry-pi-4-kernel)**
     - **[Device Tree](#device-tree)**
+    - **[Verify TPM](#verify-tpm)**
+- **[Setup TSS and Tools](#setup-tss-and-tools)**
+    - **[Install Dependencies](#install-dependencies)**
+    - **[Install tpm2-tss](#install-tpm2-tss)**
+    - **[Install tpm2-tools](#install-tpm2-tools)**
+- **[What's Next](#what-s-next)**
 - **[References](#references)**
 - **[License](#license)**
 
 # Prerequisites
 
-- Raspberry Pi 4 Model B
-- TPM 2.0 board (SPI): Iridium 9670 TPM 2.0 board [[1]](#1)
-- TPM 2.0 board (I2C): tbd
+- Raspberry Pi 4 Model B with following board mounted:
+    - TPM 2.0 board (SPI): Iridium 9670 TPM 2.0 board [[1]](#1), or
+    - TPM 2.0 board (I2C): tbd
 - Host machine:
     ```
     $ lsb_release -a
@@ -120,8 +126,6 @@ $ ls /dev | grep tpm
 /dev/tpmrm0
 ```
 
-Now you may proceed to the next step [[2]](#2).
-
 # Enable I2C TPM 2.0
 
 **Not tested yet.**
@@ -132,6 +136,7 @@ On your host machine.
 
 Install dependencies:
 ```
+$ sudo apt update
 $ sudo apt install git bc bison flex libssl-dev make libc6-dev libncurses5-dev
 ```
 
@@ -227,6 +232,117 @@ Copy the `tpm-i2c-infineon.dtbo` to `/boot/overlays/` and add the following line
 ```
 dtoverlay=tpm-i2c-infineon
 ```
+
+## Verify TPM
+
+Power up your Raspberry Pi and check if the TPM is enabled by looking for the device nodes.
+
+```
+$ ls /dev | grep tpm
+/dev/tpm0
+/dev/tpmrm0
+```
+
+# Setup TSS and Tools
+
+Update the package list:
+```
+$ sudo apt update
+```
+
+Install dependencies for tpm2-tss:
+```
+$ sudo apt -y install \
+  autoconf-archive \
+  libcmocka0 \
+  libcmocka-dev \
+  procps \
+  iproute2 \
+  build-essential \
+  git \
+  pkg-config \
+  gcc \
+  libtool \
+  automake \
+  libssl-dev \
+  uthash-dev \
+  autoconf \
+  doxygen \
+  libjson-c-dev \
+  libini-config-dev \
+  libcurl4-openssl-dev
+```
+
+Additional dependencies for tpm2-tools.
+```
+$ sudo apt -y install \
+  uuid-dev \
+  pandoc
+```
+
+# Install tpm2-tss
+
+Download tpm2-tss.
+```
+$ git clone https://github.com/tpm2-software/tpm2-tss ~/tpm2-tss
+$ cd ~/tpm2-tss
+$ git checkout 3.0.4
+```
+
+Build tpm2-tss.
+```
+$ ./bootstrap
+$ ./configure
+$ make -j$(nproc)
+```
+
+Install tpm2-tss.
+```
+$ sudo make install
+$ sudo ldconfig
+```
+
+Check installation.
+```
+$ ls /usr/local/lib/
+```
+
+# Install tpm2-tools
+
+Download tpm2-tools.
+```
+$ git clone https://github.com/tpm2-software/tpm2-tools ~/tpm2-tools
+$ cd ~/tpm2-tools
+$ git checkout 5.1
+```
+
+Build tpm2-tools.
+```
+$ ./bootstrap
+$ ./configure
+$ make -j$(nproc)
+```
+
+Install tpm2-tools.
+```
+$ sudo make install
+$ sudo ldconfig
+```
+
+Check installation.
+```
+$ ls /usr/local/bin/
+```
+
+Execute any `tpm2_` command without a TPM connected.
+```
+$ tpm2_getrandom --hex 1
+xx
+```
+
+# What's Next
+
+More examples of tpm2-tools [[2]](#2).
 
 # References
 
