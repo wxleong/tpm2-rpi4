@@ -128,7 +128,7 @@ $ ls /dev | grep tpm
 
 # Enable I2C TPM 2.0
 
-**Not tested yet.**
+**Test not completed yet. To-do: check the device tree config `tpm-pirq = <&gpio 24 GPIO_ACTIVE_HIGH>;`**
 
 ## Rebuild Raspberry Pi 4 Kernel
 
@@ -275,7 +275,7 @@ $ sudo apt -y install \
   libcurl4-openssl-dev
 ```
 
-Additional dependencies for tpm2-tools.
+Additional dependencies for tpm2-tools:
 ```
 $ sudo apt -y install \
   uuid-dev \
@@ -284,62 +284,67 @@ $ sudo apt -y install \
 
 ## Install tpm2-tss
 
-Download tpm2-tss.
+Download tpm2-tss:
 ```
 $ git clone https://github.com/tpm2-software/tpm2-tss ~/tpm2-tss
 $ cd ~/tpm2-tss
-$ git checkout 3.0.4
+$ git checkout 3.1.0
 ```
 
-Build tpm2-tss.
+Build tpm2-tss:
 ```
 $ ./bootstrap
 $ ./configure
 $ make -j$(nproc)
 ```
 
-Install tpm2-tss.
+Install tpm2-tss:
 ```
 $ sudo make install
 $ sudo ldconfig
 ```
 
-Check installation.
+Check installation:
 ```
 $ ls /usr/local/lib/
 ```
 
 ## Install tpm2-tools
 
-Download tpm2-tools.
+Download tpm2-tools:
 ```
 $ git clone https://github.com/tpm2-software/tpm2-tools ~/tpm2-tools
 $ cd ~/tpm2-tools
-$ git checkout 5.1
+$ git checkout 5.2
 ```
 
-Build tpm2-tools.
+Build tpm2-tools:
 ```
 $ ./bootstrap
 $ ./configure
 $ make -j$(nproc)
 ```
 
-Install tpm2-tools.
+Install tpm2-tools:
 ```
 $ sudo make install
 $ sudo ldconfig
 ```
 
-Check installation.
+Check installation:
 ```
 $ ls /usr/local/bin/
 ```
 
-Execute any `tpm2_` command without a TPM connected.
+Grant access permission to TPM device nodes:
 ```
-$ tpm2_getrandom --hex 1
-xx
+$ sudo chmod a+rw /dev/tpm0
+$ sudo chmod a+rw /dev/tpmrm0
+```
+
+Execute any `tpm2_` command, e.g.,
+```
+$ tpm2_getrandom --hex 16
 ```
 
 # What's Next
