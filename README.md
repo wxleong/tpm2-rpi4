@@ -16,7 +16,7 @@ Enable OPTIGA™ TPM 2.0 on Raspberry Pi 4.
     - **[Install Dependencies](#install-dependencies)**
     - **[Install tpm2-tss](#install-tpm2-tss)**
     - **[Install tpm2-tools](#install-tpm2-tools)**
-- **[What's Next](#what-s-next)**
+- **[What's Next](#whats-next)**
 - **[References](#references)**
 - **[License](#license)**
 
@@ -245,6 +245,8 @@ $ ls /dev | grep tpm
 
 # Setup TSS and Tools
 
+## Install Dependencies
+
 Update the package list:
 ```
 $ sudo apt update
@@ -280,7 +282,7 @@ $ sudo apt -y install \
   pandoc
 ```
 
-# Install tpm2-tss
+## Install tpm2-tss
 
 Download tpm2-tss.
 ```
@@ -307,7 +309,7 @@ Check installation.
 $ ls /usr/local/lib/
 ```
 
-# Install tpm2-tools
+## Install tpm2-tools
 
 Download tpm2-tools.
 ```
@@ -342,7 +344,7 @@ xx
 
 # What's Next
 
-More examples of tpm2-tools [[2]](#2).
+More examples of tpm2-tools on [[2]](#2).
 
 # References
 
