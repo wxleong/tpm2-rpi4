@@ -8,7 +8,7 @@ Enable OPTIGA™ TPM 2.0 on Raspberry Pi 4.
 - **[Install Raspberry Pi OS (using Ubuntu)](#install-raspberry-pi-os-using-ubuntu)**
 - **[Install Raspberry Pi OS (using Windows)](#install-raspberry-pi-os-using-windows)**
 - **[Enable SPI TPM 2.0](#enable-spi-tpm-20)**
-- **[Enable I2C TPM 2.0](#enable-i2c-tpm-20)**
+- **[Enable I2C TPM 1.2](#enable-i2c-tpm-12)**
     - **[Rebuild Raspberry Pi 4 Kernel](#rebuild-raspberry-pi-4-kernel)**
     - **[Device Tree](#device-tree)**
 - **[References](#references)**
@@ -122,7 +122,7 @@ $ ls /dev | grep tpm
 
 Now you may proceed to the next step [[2]](#2).
 
-# Enable I2C TPM 2.0
+# Enable I2C TPM 1.2
 
 **This section is not tested yet!**
 
