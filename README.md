@@ -16,6 +16,7 @@ Enable OPTIGA™ TPM 2.0 on Raspberry Pi 4.
     - **[Install Dependencies](#install-dependencies)**
     - **[Install tpm2-tss](#install-tpm2-tss)**
     - **[Install tpm2-tools](#install-tpm2-tools)**
+    - **[Debug](#debug)**
 - **[What's Next](#whats-next)**
 - **[References](#references)**
 - **[License](#license)**
@@ -348,6 +349,14 @@ Execute any `tpm2_` command, e.g.,
 $ tpm2_getrandom --hex 16
 ```
 
+## Debug
+
+To debug tpm2-tss [[5]](#5):
+```
+# possible levels are: NONE, ERROR, WARNING, INFO, DEBUG, TRACE
+$ export TSS2_LOG=all+TRACE
+```
+
 # What's Next
 
 More examples of tpm2-tools on [[2]](#2).
@@ -358,6 +367,7 @@ More examples of tpm2-tools on [[2]](#2).
 <a id="2">[2] https://github.com/wxleong/tpm2-cmd-ref</a><br>
 <a id="3">[3] https://forums.raspberrypi.com/viewtopic.php?t=236915</a><br>
 <a id="4">[4] https://github.com/Nuvoton-Israel/tpm_i2c_ptp</a><br>
+<a id="5">[5] https://github.com/tpm2-software/tpm2-tss/blob/master/doc/logging.md</a><br>
 
 # License
 
