@@ -16,6 +16,7 @@ Enable OPTIGA™ TPM 2.0 on Raspberry Pi 4.
     - **[Install Dependencies](#install-dependencies)**
     - **[Install tpm2-tss](#install-tpm2-tss)**
     - **[Install tpm2-tools](#install-tpm2-tools)**
+    - **[Install tpm2-tss-engine](#install-tpm2-tss-engine)**
     - **[Debug](#debug)**
 - **[What's Next](#whats-next)**
 - **[References](#references)**
@@ -347,6 +348,33 @@ $ sudo chmod a+rw /dev/tpmrm0
 Execute any `tpm2_` command, e.g.,
 ```
 $ tpm2_getrandom --hex 16
+```
+
+## Install tpm2-tss-engine
+
+Download tpm2-tss-engine:
+```
+$ git clone https://github.com/tpm2-software/tpm2-tss-engine ~/tpm2-tss-engine
+$ cd ~/tpm2-tss-engine
+$ git checkout v1.1.0
+```
+
+Build tpm2-tss-engine:
+```
+$ ./bootstrap
+$ ./configure
+$ make -j$(nproc)
+```
+
+Install tpm2-tss-engine:
+```
+$ sudo make install
+$ sudo ldconfig
+```
+
+Check installation:
+```
+$ ls /usr/lib/arm-linux-gnueabihf/engines-1.1/
 ```
 
 ## Debug
