@@ -7,12 +7,13 @@ Enable OPTIGA™ TPM 2.0 on Raspberry Pi 4.
 - **[Prerequisites](#prerequisites)**
 - **[Install Raspberry Pi OS (using Ubuntu)](#install-raspberry-pi-os-using-ubuntu)**
 - **[Install Raspberry Pi OS (using Windows)](#install-raspberry-pi-os-using-windows)**
+- **[Set Up Network & SSH without Having a Monitor](#set-up-network--ssh-without-having-a-monitor)**
 - **[Enable SPI TPM 2.0](#enable-spi-tpm-20)**
 - **[Enable I2C TPM 2.0](#enable-i2c-tpm-20)**
     - **[Rebuild Raspberry Pi 4 Kernel](#rebuild-raspberry-pi-4-kernel)**
     - **[Device Tree](#device-tree)**
     - **[Verify TPM](#verify-tpm)**
-- **[Setup TSS and Tools](#setup-tss-and-tools)**
+- **[Set Up TSS and Tools](#set-up-tss-and-tools)**
     - **[Install Dependencies](#install-dependencies)**
     - **[Install tpm2-tss](#install-tpm2-tss)**
     - **[Install tpm2-tools](#install-tpm2-tools)**
@@ -24,7 +25,7 @@ Enable OPTIGA™ TPM 2.0 on Raspberry Pi 4.
 
 # Prerequisites
 
-- Raspberry Pi 4 Model B with following board mounted:
+- Raspberry Pi 4 Model B with the following board mounted:
     - TPM 2.0 board (SPI): Iridium 9670 TPM 2.0 board [[1]](#1), or
     - TPM 2.0 board (I2C): tbd
 <!-- SPI 9670/9672, I2C 9673-->
@@ -106,6 +107,23 @@ This section is intended for Windows users.
         <img src="https://github.com/wxleong/tpm2-rpi4/blob/master/media/rpi-imager-select-write.jpg" width="50%">
         <img src="https://github.com/wxleong/tpm2-rpi4/blob/master/media/rpi-imager-writing.jpg" width="50%">
     </p>
+
+# Set Up Network & SSH without Having a Monitor
+
+Connect the microSD card to your machine (Windows/Ubuntu) and add the following files to the boot partition:
+- Create an empty file `ssh` with no file extension. When Raspberry Pi OS sees the file, it will enable SSH.
+- Create a file `wpa_supplicant.conf` with the following content. This will tell the Raspberry Pi OS which network to connect to. **Remember to update the country code.**
+    ```
+    ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+    update_config=1
+    country=SG
+
+    network={
+        scan_ssid=1
+        ssid="wifi-ssid"
+        psk="wifi-password"
+    }
+    ```
 
 # Enable SPI TPM 2.0
 
@@ -246,7 +264,7 @@ $ ls /dev | grep tpm
 /dev/tpmrm0
 ```
 
-# Setup TSS and Tools
+# Set Up TSS and Tools
 
 ## Install Dependencies
 
