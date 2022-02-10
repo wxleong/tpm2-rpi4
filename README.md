@@ -149,7 +149,9 @@ $ ls /dev | grep tpm
 
 # Enable I2C TPM 2.0
 
+<!--
 **Test not completed yet. To-do: check the device tree config `tpm-pirq = <&gpio 24 GPIO_ACTIVE_HIGH>;`**
+-->
 
 ## Rebuild Raspberry Pi 4 Kernel
 
