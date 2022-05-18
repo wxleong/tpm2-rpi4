@@ -15,8 +15,8 @@
 			#size-cells = <0>;
 			status = "okay";
 
-			slb9670: slb9670@2e {
-				compatible = "tcg,tpm_i2c_ptp";
+			tpm: tpm@2e {
+				compatible = "tcg,tpm-tis-i2c";
 				reg = <0x2e>;
 				status = "okay";
 			};
