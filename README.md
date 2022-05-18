@@ -53,7 +53,7 @@ $ sudo apt -u install \
   curl
 ```
 
-Download the *Raspberry Pi OS with desktop* image () onto your Ubuntu machine.
+Download the *Raspberry Pi OS with desktop* image (Linux 5.15.32-v7l+) onto your Ubuntu machine.
 ```
 $ curl https://downloads.raspberrypi.org/raspios_armhf/images/raspios_armhf-2022-04-07/2022-04-04-raspios-bullseye-armhf.img.xz --output ~/2022-04-04-raspios-bullseye-armhf.img.xz
 $ cd ~
