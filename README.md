@@ -53,11 +53,11 @@ $ sudo apt -u install \
   curl
 ```
 
-Download the *Raspberry Pi OS with desktop* image (~1.2GB) onto your Ubuntu machine.
+Download the *Raspberry Pi OS with desktop* image () onto your Ubuntu machine.
 ```
-$ curl https://downloads.raspberrypi.org/raspios_armhf/images/raspios_armhf-2021-11-08/2021-10-30-raspios-bullseye-armhf.zip --output ~/2021-10-30-raspios-bullseye-armhf.zip
+$ curl https://downloads.raspberrypi.org/raspios_armhf/images/raspios_armhf-2022-04-07/2022-04-04-raspios-bullseye-armhf.img.xz --output ~/2022-04-04-raspios-bullseye-armhf.img.xz
 $ cd ~
-$ unzip 2021-10-30-raspios-bullseye-armhf.zip
+$ unxz 2022-04-04-raspios-bullseye-armhf.img.xz
 ```
 
 Connect your microSD card to the Ubuntu machine. Execute command `sudo fdisk -l` to find your microSD (e.g., `/dev/sdc`). Be cautious and strongly advise you to confirm the path `/dev/???` by either checking the total storage size (e.g., 7.3 GiB), or remove the microSD and check if it is still visible on the fdisk utility.
@@ -83,7 +83,7 @@ $ sudo umount /dev/???2
 
 **!!! Warning, following command will write to the path `/dev/???`, selecting the wrong path will most certainly result in data loss or killing your operating system !!!**
 ```
-$ sudo dd if=~/2021-10-30-raspios-bullseye-armhf.img of=/dev/??? bs=100M status=progress oflag=sync
+$ sudo dd if=~/2022-04-04-raspios-bullseye-armhf.img of=/dev/??? bs=100M status=progress oflag=sync
 ```
 
 # Install Raspberry Pi OS (using Windows)
@@ -168,20 +168,21 @@ Install 32-bit toolchain:
 $ sudo apt install crossbuild-essential-armhf
 ```
 
-Download kernel source (rpi-5.2.y):
+Download kernel source:
 ```
 $ git clone https://github.com/raspberrypi/linux ~/linux
 $ cd ~/linux
-$ git checkout 94dbfa7606fc2f3df44979ed9c2d1d3676f2c159
+$ git checkout 1.20220331
 $ make kernelversion
-5.2.21
+5.15.32
 ```
 
-Patch the kernel (the changes are taken from [[4]](#4) version v2.1.3):
+Patch the kernel (the changes are taken from [[4]](#4)[[5]](#5)):
 ```
 $ git clone https://github.com/wxleong/tpm2-rpi4 ~/tpm2-rpi4
 $ cd ~/linux
-$ git am ~/tpm2-rpi4/patch/0001-add-tpm_i2c_ptp.patch
+$ git am ~/tpm2-rpi4/patch/0001-tpm-Remove-read16-read32-write32-calls-from-tpm_tis_.patch
+$ git am ~/tpm2-rpi4/patch/0002-Tpm-i2c-driver-patch-pre-release-test.patch
 ```
 
 Build:
@@ -192,8 +193,7 @@ $ make -j$(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- menuconfig
     Device Drivers  --->
         Character devices  --->
             <M> TPM Hardware Support  --->
-                <M> TPM Interface Specification 1.2/2.0 Interface (I2C - PTP)
-                (32)    Max I2C Buffer Size (NEW)
+                <M> TPM Interface Specification 1.3 Interface / TPM 2.0 FIFO Interface - (I2C - generic)
 $ make -j$(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage modules dtbs
 ```
 
@@ -248,12 +248,12 @@ $ sudo i2cdetect -y 1
 Build the device tree blob overlay:
 ```
 $ git clone https://github.com/wxleong/tpm2-rpi4 ~/tpm2-rpi4
-$ dtc -@ -I dts -O dtb -o tpm-i2c-infineon.dtbo ~/tpm2-rpi4/dts/tpm-i2c-infineon.dts
+$ dtc -@ -I dts -O dtb -o tpm-tis-i2c.dtbo ~/tpm2-rpi4/dts/tpm-tis-i2c.dts
 ```
 
-Copy the `tpm-i2c-infineon.dtbo` to `/boot/overlays/` and add the following line to the file `/boot/config.txt`:
+Copy the `tpm-tis-i2c.dtbo` to `/boot/overlays/` and add the following line to the file `/boot/config.txt`:
 ```
-dtoverlay=tpm-i2c-infineon
+dtoverlay=tpm-tis-i2c
 ```
 
 ## Verify TPM
@@ -311,7 +311,7 @@ Download tpm2-tss:
 ```
 $ git clone https://github.com/tpm2-software/tpm2-tss ~/tpm2-tss
 $ cd ~/tpm2-tss
-$ git checkout 3.1.0
+$ git checkout 3.2.0
 ```
 
 Build tpm2-tss:
@@ -399,7 +399,7 @@ $ ls /usr/lib/arm-linux-gnueabihf/engines-1.1/
 
 ## Debug
 
-To debug tpm2-tss [[5]](#5):
+To debug tpm2-tss [[6]](#6):
 ```
 # possible levels are: NONE, ERROR, WARNING, INFO, DEBUG, TRACE
 $ export TSS2_LOG=all+TRACE
@@ -414,8 +414,9 @@ More examples of tpm2-tools on [[2]](#2).
 <a id="1">[1] https://www.infineon.com/cms/en/product/evaluation-boards/iridium9670-tpm2.0-linux/</a><br>
 <a id="2">[2] https://github.com/wxleong/tpm2-cmd-ref</a><br>
 <a id="3">[3] https://forums.raspberrypi.com/viewtopic.php?t=236915</a><br>
-<a id="4">[4] https://github.com/Nuvoton-Israel/tpm_i2c_ptp</a><br>
-<a id="5">[5] https://github.com/tpm2-software/tpm2-tss/blob/master/doc/logging.md</a><br>
+<a id="4">[4] https://patchwork.kernel.org/project/linux-integrity/list/?series=628665</a><br>
+<a id="5">[5] https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/commit/?id=0961f3b0457388111b92a8306d3718e0ad3932c8</a><br>
+<a id="6">[6] https://github.com/tpm2-software/tpm2-tss/blob/master/doc/logging.md</a><br>
 
 # License
 
