@@ -26,9 +26,8 @@ Enable OPTIGA™ TPM 2.0 on Raspberry Pi 4.
 # Prerequisites
 
 - Raspberry Pi 4 Model B with the following board mounted:
-    - TPM 2.0 board (SPI): Iridium 9670 TPM 2.0 board [[1]](#1), or
-    - TPM 2.0 board (I2C): tbd
-<!-- SPI 9670/9672, I2C 9673-->
+    - TPM 2.0 (SPI): Iridium 9670 TPM 2.0 board [[1]](#1), OPTIGA™ TPM SLB 9672 RPI evaluation board [[7]](#7)
+    - TPM 2.0 (I2C): OPTIGA™ TPM SLB 9673 [[8]](#8)
 - Host machine:
     ```
     $ lsb_release -a
@@ -417,6 +416,8 @@ More examples of tpm2-tools on [[2]](#2).
 <a id="4">[4] https://patchwork.kernel.org/project/linux-integrity/list/?series=628665</a><br>
 <a id="5">[5] https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/commit/?id=0961f3b0457388111b92a8306d3718e0ad3932c8</a><br>
 <a id="6">[6] https://github.com/tpm2-software/tpm2-tss/blob/master/doc/logging.md</a><br>
+<a id="7">[7] https://www.infineon.com/cms/en/product/evaluation-boards/optiga-tpm-9672-rpi-eval/</a><br>
+<a id="8">[8] https://www.infineon.com/cms/en/product/security-smart-card-solutions/optiga-embedded-security-solutions/optiga-tpm/optiga-tpm-slb-9673-fw26/</a><br>
 
 # License
 
