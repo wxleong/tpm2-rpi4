@@ -13,6 +13,7 @@ Enable OPTIGA™ TPM 2.0 on Raspberry Pi 4.
     - **[Rebuild Raspberry Pi 4 Kernel](#rebuild-raspberry-pi-4-kernel)**
     - **[Device Tree](#device-tree)**
     - **[Verify TPM](#verify-tpm)**
+- **[Enable I2C TPM 2.0 (Linux-6.1)](#enable-i2c-tpm-20-linux-61)**
 - **[Set Up TSS and Tools](#set-up-tss-and-tools)**
     - **[Install Dependencies](#install-dependencies)**
     - **[Install tpm2-tss](#install-tpm2-tss)**
@@ -248,6 +249,47 @@ Build the device tree blob overlay:
 ```
 $ git clone https://github.com/wxleong/tpm2-rpi4 ~/tpm2-rpi4
 $ dtc -@ -I dts -O dtb -o tpm-tis-i2c.dtbo ~/tpm2-rpi4/dts/tpm-tis-i2c.dts
+```
+
+Copy the `tpm-tis-i2c.dtbo` to `/boot/overlays/` and add the following line to the file `/boot/config.txt`:
+```
+dtoverlay=tpm-tis-i2c
+```
+
+## Verify TPM
+
+Power up your Raspberry Pi and check if the TPM is enabled by looking for the device nodes.
+
+```
+$ ls /dev | grep tpm
+/dev/tpm0
+/dev/tpmrm0
+```
+
+# Enable I2C TPM 2.0 (Linux-6.1)
+
+As of March 13th, 2023, the latest release of Raspberry Pi OS comes with Kernel v5.15. However, it's worth noting that the TPM 2.0 I2C driver (`TCG_TIS_I2C`) is only available starting from Kernel version v6.0. Fortunately, it is possible to manually update to version v6.1 of Raspberry Pi OS to gain access to the `TCG_TIS_I2C` driver:
+
+```
+$ sudo apt update
+$ sudo rpi-update next
+$ reboot
+
+$ uname -a
+Linux raspberrypi 6.1.10-v8+ #1628 SMP PREEMPT Mon Feb  6 19:22:54 GMT 2023 aarch64 GNU/Linux
+```
+
+## Device Tree
+
+The `TCG_TIS_I2C` driver module is enabled by default on the `bcm2711_defconfig` build, so there is no need to rebuild the kernel. However, we do need to enable the driver on the device tree blob (DTB). To do this, you should first install the device tree compiler on your host machine:
+```
+$ sudo snap install device-tree-compiler
+```
+
+Build the device tree blob overlay:
+```
+$ git clone https://github.com/wxleong/tpm2-rpi4 ~/tpm2-rpi4
+$ dtc -@ -I dts -O dtb -o tpm-tis-i2c.dtbo ~/tpm2-rpi4/dts/tpm-tis-i2c-2.dts
 ```
 
 Copy the `tpm-tis-i2c.dtbo` to `/boot/overlays/` and add the following line to the file `/boot/config.txt`:
